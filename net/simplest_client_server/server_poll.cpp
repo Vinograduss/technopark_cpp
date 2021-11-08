@@ -123,6 +123,8 @@ int main(int argc, char* argv[]) {
 
       if (fds[i].revents & POLLHUP) {
         // e.g. previous write() was in a already closed sd
+        fds[i].revents = 0;
+        close(fds[i].fd);
         std::cerr << "client hup\n";
       } else if (fds[i].revents & POLLIN) {
         fds[i].revents = 0;

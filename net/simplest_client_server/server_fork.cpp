@@ -50,10 +50,8 @@ int make_socket(uint16_t port) {
   set_reuse_addr(sock);
   struct sockaddr_in serv_addr;
   memset(&serv_addr, 0, sizeof(serv_addr));
-  /* Give the socket a serv_addr. */
+
   serv_addr.sin_family = AF_INET;
-  // htons -- host to net short
-  // htonl -- host to net long
   serv_addr.sin_port = htons(port);
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
@@ -76,13 +74,33 @@ int main(int argc, char* argv[]) {
     std::cerr << "usage: " << argv[0] << " port" << std::endl;
     return 0;
   }
-  int sock, listener;
+  int sock;
   int port = std::stoi(std::string(argv[1]));
-  listener = make_socket(port);
-  /*
-    |make_named_socket| creates unix domain socket
-    int listener2 = make_named_socket("local_socket");
-  */
+
+  int listener = socket(PF_INET, SOCK_STREAM, 0);  // IPPROTO_TCP
+  if (listener < 0) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+
+  set_reuse_addr(listener);
+
+  struct sockaddr_in serv_addr;
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(port);
+  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+  if (bind(listener, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+    perror("bind");
+    exit(EXIT_FAILURE);
+  }
+
+  int queue_size = 3;
+  if (listen(listener, queue_size) < 0) {
+    perror("listen");
+    exit(EXIT_FAILURE);
+  }
+
   char buf[1024];
   int bytes_read;
 
@@ -108,7 +126,7 @@ int main(int argc, char* argv[]) {
         break;
 
       case 0:
-        close(listener);
+        close(listener);  // потомок закрывает Ненужную копия слушающего сокета
         while (true) {
           bytes_read = recv(sock, buf, 1024, 0);
           printf("data received, size == %d , pid = %d \n", bytes_read,
@@ -124,7 +142,7 @@ int main(int argc, char* argv[]) {
         close(sock);
         break;
       default:
-        close(sock);
+        close(sock); // родитель закрывает свой дескриптор подключенного сокета, это ненужная копия
         break;
     }
   }

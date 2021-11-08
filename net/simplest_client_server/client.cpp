@@ -9,15 +9,20 @@
 #include <unistd.h>
 #include <iostream>
 
-#define MESSAGE "This is my first message!"
+void write_to_server(int filedes, std::string msg) {
+  size_t left = msg.size();
+  ssize_t sent = 0;
 
-void write_to_server(int filedes) {
-  int nbytes;
-  nbytes = write(filedes, MESSAGE, strlen(MESSAGE) + 1);
-  if (nbytes < 0) {
-    throw std::runtime_error("write failed: " + std::string(strerror(errno)));
+  int flags = 0;
+  while (left > 0) {
+    sent = ::send(filedes, msg.data() + sent, msg.size() - sent, flags);
+    if (-1 == sent)
+      throw std::runtime_error("write failed: " + std::string(strerror(errno)));
+
+    left -= sent;
   }
-  printf("write message %s to socket \n", MESSAGE);
+
+  printf("write message %s to socket \n", msg.c_str());
 }
 
 void read_from_server(int filedes) {
@@ -39,8 +44,6 @@ void read_from_server(int filedes) {
                              " timeouted");
 
   std::string ret(buf, buf + n);
-  while (ret.back() == '\r' || ret.back() == '\n')
-    ret.pop_back();
   std::cerr << "client: " << filedes << ", recv: \n"
             << ret << " [" << n << " bytes]" << std::endl;
 }
@@ -48,13 +51,10 @@ void read_from_server(int filedes) {
 void init_sockaddr(struct sockaddr_in* name,
                    const char* hostname,
                    uint16_t port) {
-  struct hostent* hostinfo;
-
   name->sin_family = AF_INET;
-
-  // htons -- host to net short
-  // htonl -- host to net long
   name->sin_port = htons(port);
+
+  struct hostent* hostinfo;
   hostinfo = gethostbyname(hostname);
   if (hostinfo == NULL) {
     fprintf(stderr, "Unknown host %s.\n", hostname);
@@ -68,22 +68,24 @@ int main(int argc, char* argv[]) {
     std::cerr << "usage: " << argv[0] << " host port" << std::endl;
     return 0;
   }
-  int sock = 0;
-  struct sockaddr_in servername;
-  sock = socket(PF_INET, SOCK_STREAM, 0);
+
+  int sock = socket(PF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
     perror("socket (client)");
     exit(EXIT_FAILURE);
   }
+
   std::string host(argv[1]);
   int port = std::stoi(argv[2]);
+  struct sockaddr_in servername;
   init_sockaddr(&servername, host.c_str(), port);
+
   if (0 > connect(sock, (struct sockaddr*)&servername, sizeof(servername))) {
     perror("connect (client)");
     exit(EXIT_FAILURE);
   }
 
-  write_to_server(sock);
+  write_to_server(sock, "This is my first message");
   read_from_server(sock);
 
   close(sock);

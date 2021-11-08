@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
       std::cout << "start new accept \n";
       std::shared_ptr<Socket> client = s.accept();
       client_work(client);
+      client->close();
     }
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
