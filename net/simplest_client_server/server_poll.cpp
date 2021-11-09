@@ -14,6 +14,8 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <string.h>
+#include <cstring>
 
 #define POLL_SIZE 32
 #define LISTEN_QUEUE 5
