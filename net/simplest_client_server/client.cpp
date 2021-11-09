@@ -31,7 +31,7 @@ void read_from_server(int filedes) {
   // mac os x don't defines MSG_NOSIGNAL
   int n = ::recv(filedes, buf, sizeof(buf), 0);
 #else
-  int n = ::recv(m_Sd, buf, sizeof(buf), MSG_NOSIGNAL);
+  int n = ::recv(filedes, buf, sizeof(buf), MSG_NOSIGNAL);
 #endif
 
   if (-1 == n && errno != EAGAIN)
