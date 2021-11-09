@@ -18,15 +18,6 @@ std::unique_ptr<Engine> get_engine(engine_t type, int port, bool async) {
         ret.reset(new PollEngine(port));
       break;
     }
-#ifndef __APPLE__
-    case engine_t::POLL: {
-      if (async)
-        ret.reset(new AsyncPollEngine(port));
-      else
-        ret.reset(new PollEngine(port));
-      break;
-    }
-#endif  // __APPLE__
     case engine_t::UNKNOWN:
       throw std::logic_error("unknown engine type");
   }
