@@ -10,6 +10,8 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <string.h>
+#include <cstring>
 
 // using namespace std;
 #define MAXMSG 512
