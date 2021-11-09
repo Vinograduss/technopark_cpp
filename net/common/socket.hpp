@@ -1,6 +1,7 @@
 #include <unistd.h>  // close()
 #include <memory>
 #include <string>
+#include <functional>
 
 std::string int2ipv4(uint32_t ip);
 
