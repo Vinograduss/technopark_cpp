@@ -2,6 +2,7 @@
 #include <queue>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "engine.hpp"
 

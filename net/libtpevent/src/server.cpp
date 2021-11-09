@@ -19,11 +19,11 @@ std::unique_ptr<Engine> get_engine(engine_t type, int port, bool async) {
       break;
     }
 #ifndef __APPLE__
-    case engine_t::EPOLL: {
+    case engine_t::POLL: {
       if (async)
-        ret.reset(new EpollEngine(port));
+        ret.reset(new AsyncPollEngine(port));
       else
-        ret.reset(new EpollEngine(port));
+        ret.reset(new PollEngine(port));
       break;
     }
 #endif  // __APPLE__
