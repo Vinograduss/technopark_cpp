@@ -19,5 +19,5 @@ add_executable(async.simple.server  async.simple.server.cpp)
 target_link_libraries(async.simple.server  ${Boost_LIBRARIES})
 
 # Multithread Async HTTP Server
-add_executable(async.http.server response.h connection.cpp connection.h request.h async.http.server.cpp router.h)
+add_executable(async.http.server connection.h connection.cpp request.h response.h router.h async.http.server.h async.http.server.cpp)
 target_link_libraries(async.http.server  ${Boost_LIBRARIES})

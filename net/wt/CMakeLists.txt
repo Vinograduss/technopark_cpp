@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
-Project(server)
+Project(wt.server)
 
 set (CMAKE_CXX_STANDARD 14)
 

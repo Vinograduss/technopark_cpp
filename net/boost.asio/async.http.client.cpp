@@ -159,6 +159,7 @@ private:
         }
     }
 
+private:
     tcp::resolver resolver_;
     tcp::socket socket_;
 

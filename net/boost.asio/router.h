@@ -17,7 +17,12 @@ public:
             return (handler_it->second)(request);
         }
 
-        return Response();
+        Response response;
+        response.status_code = 404;
+        response.status_message = "Not Found";
+        response.http_version = "HTTP/1.0";
+        response.body = "Not Found";
+        return response;
     }
 
 private:

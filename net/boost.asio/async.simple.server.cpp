@@ -59,6 +59,7 @@ private:
         }
     }
 
+private:
     tcp::socket socket_;
     enum { max_length = 1024 };
     char data_[max_length];
@@ -83,8 +84,10 @@ private:
     {
         Connection* new_connection = new Connection(io_context_);
         acceptor_.async_accept(new_connection->socket(),
-                               boost::bind(&Server::handle_accept, this, new_connection,
-                                           boost::asio::placeholders::error));
+                               boost::bind(&Server::handle_accept,
+                                                  this,
+                                                      new_connection,
+                                                      boost::asio::placeholders::error));
     }
 
     void handle_accept(Connection* new_connection,

@@ -14,7 +14,7 @@ Response HandlerGetPost(const Request &request)
     response.status_code = 200;
     response.status_message = "OK";
     response.http_version = "HTTP/1.1";
-    response.body = "{\"userId\": 2, \"data\" : \"it's my first post\" }";
+    response.body = "[{\"userId\": 2, \"nickname\" : \"Vinograduss\" }, {\"userId\": 3, \"nickname\" : \"lambda\" }]";
     return response;
 }
 
@@ -25,9 +25,11 @@ Response HandlerGetUser(const Request &request)
     Response response;
     response.status_code = 200;
     response.status_message = "OK";
+    response.http_version = "HTTP/1.0";
     response.body = "{\"userId\": 2, \"nickname\" : \"Vinograduss\" }";
     return response;
 }
+
 
 namespace http {
     namespace server3 {
@@ -44,7 +46,7 @@ namespace http {
             signals_.add(SIGTERM);  // сигнал от kill
             signals_.async_wait(boost::bind(&server::handle_stop, this));
 
-            request_router.addHandler("/post", HandlerGetPost);
+            request_router.addHandler("/posts", HandlerGetPost);
             request_router.addHandler("/user", HandlerGetUser);
 
             // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).

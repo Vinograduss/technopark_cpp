@@ -20,12 +20,8 @@ public:
     }
     Response sendRequest(const std::string& server, const std::string& path)
     {
-        Response response;
-
-        // Get a list of endpoints corresponding to the server name.
         tcp::resolver resolver(io_context_);
         tcp::resolver::results_type endpoints = resolver.resolve(server, "http");
-
 
         tcp::socket socket(io_context_);
         boost::asio::connect(socket, endpoints);
@@ -45,6 +41,7 @@ public:
         boost::asio::read_until(socket, response_buf, "\r\n");
 
         // Check that response is OK.
+        Response response;
         std::istream response_stream(&response_buf);
         response_stream >> response.http_version;
         response_stream >> response.status_code;

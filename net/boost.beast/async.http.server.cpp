@@ -41,12 +41,6 @@ namespace server3 {
                   //signals_(io_context_),
                   acceptor_(net::make_strand(io_context_))
         {
-            /*
-            // Register to handle the signals that indicate when the server should exit.
-            signals_.add(SIGINT);   // остановка процесса с терминала
-            signals_.add(SIGTERM);  // сигнал от kill
-            signals_.async_wait(boost::bind(&server::handle_stop, this));
-            */
             //request_router.addHandler("/post", HandlerGetPost);
             //request_router.addHandler("/user", HandlerGetUser);
 
